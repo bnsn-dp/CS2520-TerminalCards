@@ -1,4 +1,3 @@
-import tkinter
 # How to implement terminal-like commands in python
 # 1. Take the command as string input
 # 2. Split the string into a tuple
