@@ -18,8 +18,16 @@ def process(string):
 
 def help():
 	print()
-	print("\t{:<8} {}".format("help", "Prints list of all commands"))
-	print("\t{:<8} {}".format("quit", "Exits the program"))
+	print("\t{:<12} {}".format("help", "Prints list of all commands"))
+	print("\t{:<12} {}".format("decks[!]", "Prints list of all decks"))
+	print("\t{:<12} {}".format("current[!]", "Prints current working deck"))
+	print("\t{:<12} {}".format("cards[!]", "Prints list of all cards in current working deck"))
+	print("\t{:<12} {}".format("select[!]", "Changes current working deck"))
+	print("\t{:<12} {}".format("shuffle[!]", "Randomizes order of cards in current working deck"))
+	print("\t{:<12} {}".format("draw[!]", "Prints the question of the card at the top of the current working deck"))
+	print("\t{:<12} {}".format("flip[!]", "Prints the answer of the most recently drawn card"))
+	print("\t{:<12} {}".format("add[!]", "Adds a card to a deck"))
+	print("\t{:<12} {}".format("quit", "Exits the program"))
 	print()
 
 def print_banner():
@@ -29,9 +37,12 @@ def print_banner():
 def main():
 	master_pile = {}
 	print_banner()
+	print("Welcome to TerminalCards! Type \"help\" to get started\n")
+	root = "User@CS2520"
+	working_deck = ""
+	prompt_marker = ":~$ "
 	while True:
-		command = input("User@CS2520:~$ ")
+		command = input(root + working_deck + prompt_marker)
 		process(command)
-	return 0
 
 main()
