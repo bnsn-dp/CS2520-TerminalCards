@@ -5,10 +5,29 @@
 # 4. Feed the remaining elements of the tuple into an appropriate parameter
 
 
-def process(string):
-	match string:
+def process(raw_command: str):
+	segments = raw_command.split(" ", 1)
+	command = segments[0]
+	flags = segments[0] if len(segments > 1) else ""
+	match command:
 		case "help":
-			help()
+			help(flags)
+		case "decks":
+			decks(flags)
+		case "current":
+			current(flags)
+		case "cards":
+			cards(flags)
+		case "select":
+			select(flags)
+		case "shuffle":
+			shuffle(flags)
+		case "draw":
+			draw(flags)
+		case "flip":
+			flip(flags)
+		case "add":
+			add(flags)
 		case "quit":
 			exit()
 		case _:
@@ -29,6 +48,30 @@ def help():
 	print("\t{:<12} {}".format("add[!]", "Adds a card to a deck"))
 	print("\t{:<12} {}".format("quit", "Exits the program"))
 	print()
+
+def decks(flags):
+	return 0
+
+def current(flags):
+	return 0
+
+def cards(flags):
+	return 0
+
+def select(flags):
+	return 0
+
+def shuffle(flags):
+	return 0
+
+def draw(flags):
+	return 0
+
+def flip(flags):
+	return 0
+
+def add(flags):
+	return 0
 
 def print_banner():
 	print("TerminalCards (TC) by B.Diep, M. Nasla, J. Rodas, M. Yaskowitz")
