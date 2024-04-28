@@ -4,7 +4,8 @@
 # 3. Read the first item as the core command
 # 4. Feed the remaining elements of the tuple into an appropriate parameter
 
-master_pile = {} #dictionary of all the cards in the deck
+master_pile = {} #dictionary of all the cards in the deck. Unordered by default
+queue = [] # an empty list that will hold the key-value pairs in a given order. Can be emptied, so we don't want to use the master_pile here
 master_file = None #file to keep track of current deck
 def process(raw_command: str):
   segments = raw_command.split(" ", 1)
@@ -39,10 +40,10 @@ def process(raw_command: str):
 def help():
   print()
   print("\t{:<12} {}".format("help", "Prints list of all commands"))
-  print("\t{:<12} {}".format("decks[!]", "Prints list of all decks"))
-  print("\t{:<12} {}".format("current[!]", "Prints current working deck"))
+  print("\t{:<12} {}".format("decks", "Prints list of all decks"))
+  print("\t{:<12} {}".format("current", "Prints current working deck"))
   print("\t{:<12} {}".format("cards[!]", "Prints list of all cards in current working deck"))
-  print("\t{:<12} {}".format("select[!]", "Changes current working deck"))
+  print("\t{:<12} {}".format("select", "Changes current working deck"))
   print("\t{:<12} {}".format("shuffle[!]", "Randomizes order of cards in current working deck"))
   print("\t{:<12} {}".format("draw[!]", "Prints the question of the card at the top of the current working deck"))
   print("\t{:<12} {}".format("flip[!]", "Prints the answer of the most recently drawn card"))
@@ -51,6 +52,9 @@ def help():
   print()
 
 def decks(flags):
+  # Flags:
+  #	  [--sort | -s <name | size> <ascend | descend>]: Sorts the decks with the specified rules
+  #     For example: "decks --sort name ascend" would return the decks sorted by name in alphabetical order
   try:
     file = open("decks.txt", "r") #opening file that contains list of decks
     for line in file: #printing the list of decks
@@ -60,17 +64,25 @@ def decks(flags):
     print(f"No decks found. Create a deck with the 'select' command")
 
 def current(flags):
-  return 0
+  print(master_file)
 
 def cards(flags):
+  # Prints out the contents of the master_file
+  # Flags:
+  #   [--sort | -s <name | size> <ascend | descend>]: Sorts the cards with the specified rules
+  #     For example: "cards --sort name ascend" would return the decks sorted by name in alphabetical order
   return 0
 
 def select(flags):
+  # Flags:
+  # 	"name": a string specifying the name of the deck.
+
   global master_file #specifying that we are using the global variable
   try: #making sure file exists and opening it
     file = open(flags, "r")
     master_file = flags #changing the current working deck
     file.close()
+    update_master_pile() # This will populate master_pile with the cards so the other functions can use it
     print(f"Deck {flags} selected")
   except FileNotFoundError: #no file so we ask to create it
     print()
@@ -86,12 +98,15 @@ def select(flags):
       file.close()
 
 def shuffle(flags):
+  # Randomizes the order of the current master_pile
   return 0
 
 def draw(flags):
+  # Pops and prints a key off the top of the current master_pile
   return 0
 
 def flip(flags):
+  # Prints the value of the current key
   return 0
 
 def add(flags):
