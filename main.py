@@ -129,11 +129,20 @@ def shuffle(flags):
 
 def draw(flags):
   # Pops and prints a key off the top of the current master_pile
-  return 0
+  if master_pile:
+    card_key, card_value = master_pile.popitem(last=False)
+    print("Question:", card_key)
+  else:
+    print("No cards left in the deck.")
 
 def flip(flags):
   # Prints the value of the current key
-  return 0
+  global master_pile # Accessing Global variable master_pile
+  if master_pile:
+    current_card_key = list(master_pile.keys())[-1] # Accessing the current card in the master_pile.
+    print("Answer:", master_pile[current_card_key]) # Prints the answer to the current card
+  else:
+    print("No cards have been drawn yet.")
 
 def add(flags):
   if master_file is None: #making sure we are using a deck
