@@ -3,6 +3,7 @@
 # 2. Split the string into a tuple
 # 3. Read the first item as the core command
 # 4. Feed the remaining elements of the tuple into an appropriate parameter
+import random
 
 master_pile = {} #dictionary of all the cards in the deck. Unordered by default
 queue = [] # an empty list that will hold the key-value pairs in a given order. Can be emptied, so we don't want to use the master_pile here
@@ -71,7 +72,29 @@ def cards(flags):
   # Flags:
   #   [--sort | -s <name | size> <ascend | descend>]: Sorts the cards with the specified rules
   #     For example: "cards --sort name ascend" would return the decks sorted by name in alphabetical order
-  return 0
+  split = flags.split()
+  if len(split) == 0:
+    for key, value in master_pile.items():
+      print(f"{key}: {value}")
+  elif split[0] == "--sort" or split[0] == "-s":
+    if split[1] == "name" and split[2] == "ascend":
+      sort = sorted(master_pile.keys())
+      for name in sort:
+        print(name, master_pile[name])
+    elif split[1] == "name" and split[2] == "descend":
+      sort = sorted(master_pile.keys(), reverse=True)
+      for name in sort:
+        print(name, master_pile[name])
+    elif split[1] == "size" and split[2] == "ascend":
+      sort = dict(sorted(master_pile.items(), key=lambda item: len(item[0])))
+      for name, age in sort.items():
+        print(name, age)
+    elif split[1] == "size" and split[2] == "descend":
+      sort = dict(sorted(master_pile.items(), key=lambda item: len(item[0]), reverse=True))
+      for name, age in sort.items():
+        print(name, age)
+
+  #return 0
 
 def select(flags):
   # Flags:
@@ -99,7 +122,10 @@ def select(flags):
 
 def shuffle(flags):
   # Randomizes the order of the current master_pile
-  return 0
+  keys = list(master_pile.keys())
+  random.shuffle(keys)
+  for key in keys:
+    print(f"{key}: {master_pile[key]}")
 
 def draw(flags):
   # Pops and prints a key off the top of the current master_pile
@@ -110,7 +136,7 @@ def flip(flags):
   return 0
 
 def add(flags):
-  if master_file is None: #making sure we are using a deck 
+  if master_file is None: #making sure we are using a deck
     print(" No deck selected")
     print(" Use command 'select' to select/add a deck. Use command 'help' for list of commands")
   else:
@@ -126,7 +152,7 @@ def update_master_pile():
   global master_file #specifying that we are using the global variable
   if master_file is not None:
     file = open(master_file, "r")
-    for line in file: 
+    for line in file:
       line = line.rstrip("\n")
       key, value = line.split(" : ")
       master_pile[key] = value
