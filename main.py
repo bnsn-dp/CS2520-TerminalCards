@@ -113,10 +113,10 @@ def current():
   print(master_file)
 
 def cards(flags):
-  # Prints out the contents of the master_file
+  # Prints out the contents of the master_pile
   # Flags:
-  #   [--sort | -s <name> <ascend | descend>]: Sorts the cards with the specified rules
-  #     For example: "cards --sort name ascend" would return the decks sorted by name in alphabetical order
+  #   [--sort | -s <ascend | descend>]: Sorts the cards with the specified rules
+  #     For example: "cards --sort ascend" would return the cards sorted by question
   split = flags.split()
   if len(split) == 0:
     for key, value in master_pile.items():
