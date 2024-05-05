@@ -25,7 +25,7 @@ def process(raw_command: str):
     case "help":
       help(flags)
     case "decks":
-      decks(flags)
+      decks()
     case "current":
       current()
     case "cards":
@@ -58,8 +58,10 @@ def help(flags):
     case "current":
       print("\tUSAGE: \"current\"")
     case "cards":
-      print("\tUSAGE: \"cards\" [--sort | -s <ascend> | <descend]")
-      print("\tFLAG: [--sort | -s] Prints cards sorted in ascending or descending order")
+      print("\tUSAGE: \"cards\" [--ascend | -a] [--descend | -d] [--obscure | -o]")
+      print("\tFLAG: [--ascend | -a] Prints cards sorted in ascending order")
+      print("\t      [--descend | -d] Prints cards sorted in descending order")
+      print("\t      [--obscure | -o] Prints cards without answers")
       print("\tNOTE: Needs a selected deck")
     case "select":
       print("\tUSAGE: \"select\" [deck]")
@@ -87,12 +89,13 @@ def help(flags):
       print("Unrecognized Command")
   print()
 
-def decks(flags):
+def decks():
   try:
     file = open("decks.txt", "r") #opening file that contains list of decks
     for line in file: #printing the list of decks
       line = line.rstrip("\n")
-      print(line + "\n")
+      print("\n\t" + line)
+    print()
   except FileNotFoundError:
     print(f"\n\tNo decks found. Create a deck with the 'select' command\n")
 
@@ -100,38 +103,45 @@ def current():
   print(master_file)
 
 def cards(flags):
-  # Prints out the contents of the master_pile
-  # Flags:
-  #   [--sort | -s <ascend | descend>]: Sorts the cards with the specified rules
-  #     For example: "cards --sort ascend" would return the cards sorted by question
-  split = flags.split()
-  if len(split) == 0:
-    for key, value in master_pile.items():
-      print(f"{key}: {value}")
-  elif split[0] == "--sort" or split[0] == "-s":
-    if split[1] == "name" and split[2] == "ascend":
-      sort = sorted(master_pile.keys())
-      for name in sort:
-        print(name, master_pile[name])
-    elif split[1] == "name" and split[2] == "descend":
-      sort = sorted(master_pile.keys(), reverse=True)
-      for name in sort:
-        print(name, master_pile[name])
-    elif split[1] == "size" and split[2] == "ascend":
-      sort = dict(sorted(master_pile.items(), key=lambda item: len(item[0])))
-      for name, age in sort.items():
-        print(name, age)
-    elif split[1] == "size" and split[2] == "descend":
-      sort = dict(sorted(master_pile.items(), key=lambda item: len(item[0]), reverse=True))
-      for name, age in sort.items():
-        print(name, age)
-
-  #return 0
+  OBSCURE_FLAGS = [
+    "--obscure",
+    "-o"
+  ]
+  ASCEND_FLAG = [
+    "--ascend",
+    "-a"
+  ]
+  DESCEND_FLAG = [
+    "--descend",
+    "-d"
+  ]
+  obscured = False
+  reverse = False
+  split_flags = flags.split()
+  if len(split_flags) > 3:
+    print("\n\tToo many flags! \"cards\" takes at most three flags")
+    help("cards")
+    return -1
+  for flag in split_flags:
+    if flag in ASCEND_FLAG:
+      reverse = False
+    elif flag in DESCEND_FLAG:
+      reverse = True
+    elif flag in OBSCURE_FLAGS:
+      obscured = True
+    else:
+      print("\n\tFlag " + flag + " not recognized. Try again")
+      help("cards")
+      return -1
+  print()
+  for q, a in sorted(master_pile.items(), reverse=reverse):
+    if obscured:
+      print("\t%s" % q)
+    else:
+      print("\t%s : %s" % (q, a))
+  print()
 
 def select(flags):
-  # Flags:
-  # 	"name": a string specifying the name of the deck.
-
   global master_file #specifying that we are using the global variable
   global queue
   try: #making sure file exists and opening it
@@ -218,7 +228,7 @@ def main():
   print_banner()
   print("Welcome to TerminalCards! Type \"help\" to get started\n")
   root = "User@CS2520\\"
-  prompt_marker = ":~$ "
+  prompt_marker = "\\:~$ "
   while True:
     command = input(root + master_file + prompt_marker)
     process(command)
