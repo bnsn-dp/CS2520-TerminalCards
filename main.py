@@ -10,8 +10,6 @@ COMMANDS = {
   "draw"    : "Prints the question face of the card at the top of the deck",
   "flip"    : "Prints the answer face of the most recently drawn card",
   "add"     : "Adds a card to a deck",
-  "edit"    : "Changes either the question or answer of the most recently drawn card",
-  "remove"  : "Deletes a card or deck",
   "quit"    : "Exits the program"
 }
 
@@ -78,13 +76,6 @@ def help(flags):
     case "add":
       print("\tUSAGE: \"add\" [question]")
       print("\tNOTE: Needs a selected deck")
-    case "edit":
-      print("\tUSAGE: \"edit\" [<question> | <answer>]")
-      print("\tNOTE: Needs a recently drawn card")
-    case "remove":
-      print("\tUSAGE: \"remove\" [<deck> | <card>]")
-      print("\tNOTE: Needs a recently drawn card")
-      print("\tNOTE: Needs a selected deck")
     case "quit":
       print("\tUSAGE: \"quit\"")
     case "":
@@ -94,20 +85,16 @@ def help(flags):
         print("\t{:<12} {}".format(command, definition))
     case _:
       print("Unrecognized Command")
-  
   print()
 
 def decks(flags):
-  # Flags:
-  #	  [--sort | -s <name | size> <ascend | descend>]: Sorts the decks with the specified rules
-  #     For example: "decks --sort name ascend" would return the decks sorted by name in alphabetical order
   try:
     file = open("decks.txt", "r") #opening file that contains list of decks
     for line in file: #printing the list of decks
       line = line.rstrip("\n")
       print(line + "\n")
   except FileNotFoundError:
-    print(f"No decks found. Create a deck with the 'select' command")
+    print(f"\n\tNo decks found. Create a deck with the 'select' command\n")
 
 def current():
   print(master_file)
@@ -146,20 +133,23 @@ def select(flags):
   # 	"name": a string specifying the name of the deck.
 
   global master_file #specifying that we are using the global variable
+  global queue
   try: #making sure file exists and opening it
     file = open(flags, "r")
     master_file = flags #changing the current working deck
     file.close()
     update_master_pile() # This will populate master_pile with the cards so the other functions can use it
-    print(f"\tDeck {flags} selected")
+    queue = list(master_pile.items())
+    print(f"\n\tDeck {flags} selected\n")
   except FileNotFoundError: #no file so we ask to create it
     print()
     answer = input("\tDeck not found. Do you want to create it? (yes/no): ")
+    print()
     if answer == "yes":
       master_file = flags #changing the current working deck
       file = open(flags, "a") #creating file
       file.close()
-      print(f"Deck {flags} selected")
+      print(f"\n\tDeck {flags} selected\n")
       #saving the name of the newly added deck into a file
       file = open("decks.txt","a")
       file.write(master_file) #adding to list of decks
@@ -167,18 +157,18 @@ def select(flags):
 
 def shuffle():
   # Randomizes the order of the current master_pile
-  keys = list(master_pile.keys())
-  random.shuffle(keys)
-  for key in keys:
-    print(f"\t{key}: {master_pile[key]}")
+  global queue
+  random.shuffle(queue)
+  print("\n\tShuffled deck\n")
 
 def draw():
   # Pops and prints a key off the top of the current master_pile
-  if master_pile:
-    card_key, card_value = master_pile.popitem() # removed parameter: last=False
-    print("\tQuestion:", card_key)
+  global queue
+  if queue:
+    card_key, card_value = queue.pop() # removed parameter: last=False
+    print("\n\tQuestion:", card_key, "\n")
   else:
-    print("\tNo cards left in the deck.")
+    print("\n\tNo cards left in the deck.\n")
 
 def flip():
   # Prints the value of the current key
