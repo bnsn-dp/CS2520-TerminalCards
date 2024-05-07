@@ -206,11 +206,12 @@ def add(flags):
     file.close()
     update_master_pile() #updating the master pile
 
-    
+
 #updating the master pile
 def update_master_pile():
   global master_file #specifying that we are using the global variable
   if master_file is not None:
+    master_pile.clear()
     file = open(master_file, "r")
     for line in file:
       line = line.rstrip("\n")
