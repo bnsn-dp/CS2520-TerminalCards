@@ -162,7 +162,7 @@ def select(flags):
       print(f"\n\tDeck {flags} selected\n")
       #saving the name of the newly added deck into a file
       file = open("decks.txt","a")
-      file.write(master_file) #adding to list of decks
+      file.write("\n" + master_file) #adding to list of decks
       file.close()
 
 def shuffle():
