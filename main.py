@@ -16,6 +16,7 @@ COMMANDS = {
 master_pile = {} #dictionary of all the cards in the deck. Unordered by default
 queue = [] # an empty list that will hold the key-value pairs in a given order. Can be emptied, so we don't want to use the master_pile here
 master_file = "" #file to keep track of current deck
+card_key = ""
 
 def process(raw_command: str):
   segments = raw_command.split(" ", 1)
@@ -174,6 +175,7 @@ def shuffle():
 def draw():
   # Pops and prints a key off the top of the current master_pile
   global queue
+  global card_key
   if queue:
     card_key, card_value = queue.pop() # removed parameter: last=False
     print("\n\tQuestion:", card_key, "\n")
@@ -181,13 +183,16 @@ def draw():
     print("\n\tNo cards left in the deck.\n")
 
 def flip():
-  # Prints the value of the current key
-  global master_pile # Accessing Global variable master_pile
+  global master_pile
+  global card_key
   if master_pile:
-    current_card_key = list(master_pile.keys())[-1] # Accessing the current card in the master_pile.
-    print("\tAnswer:", master_pile[current_card_key]) # Prints the answer to the current card
+    current_card_value = master_pile.get(card_key)  # Getting the corresponding value (answer) from the master_pile
+    if current_card_value is not None:
+      print("\tAnswer:", current_card_value)  # Printing the answer to the current question
+    else:
+      print("\tNo corresponding answer found for the current card.")
   else:
-    print("\tNo cards have been drawn yet.")
+      print("\tNo cards have been drawn yet.")
 
 def add(flags):
   if master_file is None: #making sure we are using a deck
@@ -201,6 +206,7 @@ def add(flags):
     file.close()
     update_master_pile() #updating the master pile
 
+    
 #updating the master pile
 def update_master_pile():
   global master_file #specifying that we are using the global variable
