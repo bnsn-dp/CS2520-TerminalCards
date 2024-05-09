@@ -188,11 +188,12 @@ def flip():
   if master_pile:
     current_card_value = master_pile.get(card_key)  # Getting the corresponding value (answer) from the master_pile
     if current_card_value is not None:
-      print("\tAnswer:", current_card_value)  # Printing the answer to the current question
+      print("\n\tAnswer:", current_card_value)  # Printing the answer to the current question
+      print()
     else:
-      print("\tNo corresponding answer found for the current card.")
+      print("\n\tNo corresponding answer found for the current card.\n")
   else:
-      print("\tNo cards have been drawn yet.")
+      print("\n\tNo cards have been drawn yet.\n")
 
 def add(flags):
   if master_file is None: #making sure we are using a deck
