@@ -4,10 +4,10 @@ TerminalCards is a Terminal-based flashcard application made for CS2520. It impl
 Clone the repository with 
 
 ```
-git clone 
+git clone https://github.com/bnsn-dp/CS2520-TerminalCards.git
 ```
 
-Run the program in the terminal with
+and run the program with
 
 ```
 python main.py
